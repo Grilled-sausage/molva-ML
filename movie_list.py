@@ -15,7 +15,7 @@ for i in range(1,7) :
         movie_list.append([b['movieCd'],b['movieNm'],b['movieNmEn'],b['prdtYear'],b['repNationNm'],b['repGenreNm'],b['genreAlt']])
     data = pd.DataFrame(movie_list)
     data.columns = ['movieCd','movieNm','movieNmEn','prdtYear','repNationNm','repGenreNm','genreAlt']
-    print(data)
+    
     for j in range(0,len(data.index)):
         if '성인물(에로)' in data['genreAlt'][j]:
             delete_list.append(j)
