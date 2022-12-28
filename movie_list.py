@@ -2,8 +2,8 @@ import requests
 import json
 import pandas as pd
 
-for i in range(1,2) :
-    url = 'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?key=383db8629ed31d128685490012d6539b&curPage={0}&itemPerPage=10'.format(i)
+for i in range(1,7) :
+    url = 'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?key=c721d3c3e72b7bbe39ae4e7e42012e1a&curPage={0}&itemPerPage=100&openStartDt=2022&openEndDt=2022'.format(i)
     res = requests.get(url)
     text= res.text
     d = json.loads(text)
@@ -15,7 +15,7 @@ for i in range(1,2) :
         movie_list.append([b['movieCd'],b['movieNm'],b['movieNmEn'],b['prdtYear'],b['repNationNm'],b['repGenreNm'],b['genreAlt']])
     data = pd.DataFrame(movie_list)
     data.columns = ['movieCd','movieNm','movieNmEn','prdtYear','repNationNm','repGenreNm','genreAlt']
-    
+    print(data)
     for j in range(0,len(data.index)):
         if '성인물(에로)' in data['genreAlt'][j]:
             delete_list.append(j)
@@ -29,7 +29,7 @@ for i in range(1,2) :
     people_list = []
     x = data['movieCd'][0]
     for k in range(0, index_length) :
-        detail_url = 'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key=383db8629ed31d128685490012d6539b&movieCd={0}'.format(data['movieCd'][k])
+        detail_url = 'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key=c721d3c3e72b7bbe39ae4e7e42012e1a&movieCd={0}'.format(data['movieCd'][k])
         detail_res = requests.get(detail_url)
         
         detail_text = detail_res.text
@@ -54,8 +54,8 @@ for i in range(1,2) :
         tmp.reset_index(drop=True, inplace=True)
 
     people_data = tmp
+    tmp = data
+    tmp['showTm']=showTm_list
+    data.to_csv("movie_list.txt", mode='a', encoding='utf-8', index=False, header=None)
+    people_data.to_csv("participation_base.txt", mode='a', encoding='utf-8', index=False, header=None)    
 
-    data['showTm']=showTm_list
-    
-data.to_csv("movie_list.txt", mode='a', encoding='utf-8', index=False, header = None)
-people_data.to_csv("part_base.txt", mode='a', encoding='utf-8', index=False, header = None)
